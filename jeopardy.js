@@ -18,15 +18,43 @@
 //    ...
 //  ]
 
-let categories = [];
+const h1 = document.createElement('h1');
+const div = document.createElement('div');
+const btn = document.createElement('button');
+btn.className = 'btn btn-success btn-lg text-center';
+btn.id = 'btnStart';
+btn.innerText = 'Start/Reset Game';
+const body = document.querySelector('body');
+h1.innerText = 'Jeopardy';
+h1.className = 'display-2 p-2 text-center';
+h1.id = 'header';
+body.append(h1);
+body.append(div);
+div.className = 'container-fluid text-center';
+div.append(btn);
+const btnStartGame = document.querySelector('#btnStart');
+btnStartGame.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  setupAndStart();
+});
 
+let categories = [];
 
 /** Get NUM_CATEGORIES random category from API.
  *
  * Returns array of category ids
  */
 
-function getCategoryIds() {
+async function getCategoryIds() {
+  const rndNum = Math.floor(Math.random() * 1000);
+  const getIDs = await axios.get(
+    'http://jservice.io/api/categories?count=6&offset=' + rndNum
+  );
+  for (let i = 0; i < getIDs.data.length; i++) {
+    categories.push(getIDs.data[i]);
+  }
+  //   console.log(categories);
+  getCategory(categories);
 }
 
 /** Return object with data about a category:
@@ -42,6 +70,25 @@ function getCategoryIds() {
  */
 
 function getCategory(catId) {
+  const newTable = document.createElement('table');
+  const tableDiv = document.createElement('div');
+  body.append(tableDiv);
+  tableDiv.append(newTable);
+  tableDiv.className = 'container-fluid p-3';
+  newTable.className = 'table shadow text-center';
+  // newTable.border = '1';
+  newTable.innerHTML =
+    '<thead id=tableHeader><tr id=headerTR class=tr></tr></thead>';
+  const getTR = document.querySelector('#headerTR');
+
+  //   console.log(catId);
+  for (let i = 0; i < catId.length; i++) {
+    const newTD = document.createElement('td');
+    getTR.append(newTD);
+    newTD.innerText = catId[i].title.toUpperCase();
+    // newTD.style.width = '17.5%';
+  }
+  fillTable(catId);
 }
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
@@ -52,7 +99,20 @@ function getCategory(catId) {
  *   (initally, just show a "?" where the question/answer would go.)
  */
 
-async function fillTable() {
+async function fillTable(questions) {
+  //   console.log(questions[0].id);
+  const getQuestion = await axios.get(
+    'http://jservice.io/api/clues?value=5&category=271'
+  );
+  console.log(getQuestion);
+  const getTR = document.querySelector('#tableHeader');
+  const newTBody = document.createElement('tbody');
+  const newTR = document.createElement('tr');
+  getTR.append(newTBody);
+  newTBody.append(newTR);
+
+  const newTD = document.createElement('td');
+  newTR.append(newTD);
 }
 
 /** Handle clicking on a clue: show the question or answer.
@@ -63,21 +123,17 @@ async function fillTable() {
  * - if currently "answer", ignore click
  * */
 
-function handleClick(evt) {
-}
+function handleClick(evt) {}
 
 /** Wipe the current Jeopardy board, show the loading spinner,
  * and update the button used to fetch data.
  */
 
-function showLoadingView() {
-
-}
+function showLoadingView() {}
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
-function hideLoadingView() {
-}
+function hideLoadingView() {}
 
 /** Start game:
  *
@@ -87,6 +143,7 @@ function hideLoadingView() {
  * */
 
 async function setupAndStart() {
+  getCategoryIds();
 }
 
 /** On click of start / restart button, set up game. */
