@@ -1,35 +1,15 @@
-// categories is the main data structure for the app; it looks like this:
-
-//  [
-//    { title: "Math",
-//      clues: [
-//        {question: "2+2", answer: 4, showing: null},
-//        {question: "1+1", answer: 2, showing: null}
-//        ...
-//      ],
-//    },
-//    { title: "Literature",
-//      clues: [
-//        {question: "Hamlet Author", answer: "Shakespeare", showing: null},
-//        {question: "Bell Jar Author", answer: "Plath", showing: null},
-//        ...
-//      ],
-//    },
-//    ...
-//  ]
-
 const h1 = document.createElement('h1');
 const div = document.createElement('div');
 const btn = document.createElement('button');
 const p = document.createElement('p');
 btn.className = 'btn btn-success btn-lg text-center';
 btn.id = 'btnStart';
-btn.innerText = 'Start/Reset Game';
+btn.innerText = 'Reset Game';
 const body = document.querySelector('body');
 p.innerText = 'Jeopardy';
 h1.className = 'display-2 p-2 text-center';
 p.id = 'header';
-p.className = 'lead text-lg';
+p.className = 'lead';
 body.append(h1);
 h1.append(p);
 body.append(div);
@@ -40,13 +20,9 @@ btnStartGame.addEventListener('click', function (evt) {
   evt.preventDefault();
   setupAndStart();
 });
-
+setupAndStart();
 let categories = [];
-
-/** Get NUM_CATEGORIES random category from API.
- *
- * Returns array of category ids
- */
+// let intCount = 0;
 
 async function getCategoryIds() {
   const rndNum = Math.floor(Math.random() * 1456);
@@ -97,7 +73,7 @@ async function fillTable(questions) {
     const newDiv = document.createElement('div');
     newDiv.className = 'row ';
     newDiv.id = i;
-    newDiv.style.backgroundColor = 'blue';
+    newDiv.style.backgroundColor = '#060ce9';
     getTableDiv.append(newDiv);
   }
   let getQuestion = [];
@@ -107,16 +83,20 @@ async function fillTable(questions) {
     );
     getQuestion.push(oneQuestion.data);
   }
+
   hideLoadingView();
+
   // fillQuestions();
   for (let j = 0; j < 5; j++) {
     const getNewDiv = document.getElementById(j);
     for (let v = 0; v < 6; v++) {
       const newDiv = document.createElement('div');
       newDiv.className =
-        'col divQuestions  d-flex align-items-center justify-content-center';
+        'col divQuestions d-flex align-items-center justify-content-center';
       newDiv.id = v.toString() + j.toString();
       newDiv.innerText = '$' + (j + 1) + '00';
+      // data-toggle="tooltip" data-placement="top" title="Tooltip on top"
+      newDiv.title = 'Click for Question';
       getNewDiv.append(newDiv);
       newDiv.addEventListener('click', function () {
         // // alert(newDiv.id);
@@ -127,18 +107,6 @@ async function fillTable(questions) {
       });
     }
   }
-  // for (let j = 0; j < 5; j++) {
-  //   const getNewTR = document.getElementById(j);
-  //   for (let v = 0; v < 6; v++) {
-  //     const makeNewTD = document.createElement('td');
-  //     makeNewTD.innerText = '?';
-  //     getNewTR.append(makeNewTD);
-  //     makeNewTD.addEventListener('click', function (evt) {
-  //       evt.preventDefault();
-  //       emptyBoard();
-  //     });
-  //   }
-  // }
 
   function fillQuestions(x, y) {
     // alert(x + ' ' + y);
@@ -146,16 +114,20 @@ async function fillTable(questions) {
     const getQuestionDiv = document.getElementById(y.toString() + x.toString());
     getQuestionDiv.style.fontSize = '1.2rem';
     getQuestionDiv.innerText = getQuestion[y][x].question;
+    getQuestionDiv.title = 'Click to Answer';
     getQuestionDiv.addEventListener('click', function (evt) {
       evt.preventDefault();
       const setAnswer = prompt(getQuestion[y][x].question);
-      if (getQuestion[y][x].answer.includes(setAnswer)) {
+      const questionLC = getQuestion[y][x].answer.toLowerCase();
+      if (questionLC.includes(setAnswer.toLowerCase())) {
         alert('Correct');
         getQuestionDiv.style.backgroundColor = 'green';
       } else {
+        alert('Sorry...incorrect');
         getQuestionDiv.style.backgroundColor = 'red';
       }
       getQuestionDiv.innerText = getQuestion[y][x].answer;
+      getQuestionDiv.style.pointerEvents = 'none';
     });
   }
 }
@@ -209,14 +181,3 @@ function setupAndStart() {
   emptyBoard();
   getCategoryIds();
 }
-
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-});
-/** On click of start / restart button, set up game. */
-
-// TODO
-
-/** On page load, add event handler for clicking clues */
-
-// TODO

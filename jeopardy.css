@@ -6,7 +6,7 @@
   #74119c
 */
 :root{
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  /* font-family: Georgia, 'Times New Roman', Times, serif; */
   font-size: 10px;
 }
 
@@ -29,6 +29,10 @@ td{
   font-size: 2.5rem;
   color: #ffffff;
   height: 100px;
-  
-
+  cursor: pointer;
+}
+#header{
+  font-size: 5rem;
+  color: #060ce9;
+  font-weight: bold;
 }
