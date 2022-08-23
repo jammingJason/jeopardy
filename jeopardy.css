@@ -18,3 +18,17 @@ h1{
 td{
   font-size: 1.2rem;
 }
+.divHeaders{
+  border: solid 2px #060ce9;
+  font-size: 1.5rem;
+  height: 50px;
+  
+}
+.divQuestions{
+  border: solid 2px #ffffff;
+  font-size: 2.5rem;
+  color: #ffffff;
+  height: 100px;
+  
+
+}
