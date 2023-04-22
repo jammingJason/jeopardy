@@ -1,3 +1,4 @@
+// create header and start a new game
 const h1 = document.createElement('h1');
 const div = document.createElement('div');
 const btn = document.createElement('button');
@@ -26,14 +27,15 @@ let categories = [];
 
 async function getCategoryIds() {
   const rndNum = Math.floor(Math.random() * 1456);
+  console.log(rndNum);
   const getIDs = await axios.get(
     'http://jservice.io/api/categories?count=6&offset=' + rndNum
   );
   for (let i = 0; i < getIDs.data.length; i++) {
     categories.push(getIDs.data[i]);
   }
-  //   console.log(categories);
-  getCategory(categories);
+  console.log(categories);
+  getCategory(getIDs.data);
 }
 
 function getCategory(catId) {
@@ -54,6 +56,7 @@ function getCategory(catId) {
       'col divHeaders d-flex align-items-center justify-content-center';
     rowDiv.append(colDiv);
     colDiv.innerText = catId[i].title.toUpperCase();
+    colDiv.style.color = '#060ce9';
     // newTD.style.width = '17.5%';
   }
   fillTable(catId);
@@ -68,7 +71,9 @@ function getCategory(catId) {
  */
 
 async function fillTable(questions) {
-  const getTableDiv = document.querySelector('#tableDiv');
+  const varName = 'tableDiv';
+
+  const getTableDiv = document.querySelector(`#${varName}`);
   for (let i = 0; i < 5; i++) {
     const newDiv = document.createElement('div');
     newDiv.className = 'row ';
@@ -117,17 +122,19 @@ async function fillTable(questions) {
     getQuestionDiv.title = 'Click to Answer';
     getQuestionDiv.addEventListener('click', function (evt) {
       evt.preventDefault();
+      getQuestionDiv.style.pointerEvents = 'none';
       const setAnswer = prompt(getQuestion[y][x].question);
       const questionLC = getQuestion[y][x].answer.toLowerCase();
-      if (questionLC.includes(setAnswer.toLowerCase())) {
-        alert('Correct');
-        getQuestionDiv.style.backgroundColor = 'green';
-      } else {
-        alert('Sorry...incorrect');
-        getQuestionDiv.style.backgroundColor = 'red';
+      if (setAnswer) {
+        if (questionLC.includes(setAnswer.toLowerCase())) {
+          alert('Correct');
+          getQuestionDiv.style.backgroundColor = '#28a200';
+        } else {
+          alert('Sorry...incorrect');
+          getQuestionDiv.style.backgroundColor = 'red';
+        }
+        getQuestionDiv.innerText = getQuestion[y][x].answer;
       }
-      getQuestionDiv.innerText = getQuestion[y][x].answer;
-      getQuestionDiv.style.pointerEvents = 'none';
     });
   }
 }
